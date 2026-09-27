@@ -65,7 +65,7 @@ npm install
 npm run dev                 # http://localhost:5173
 ```
 
-Build produksi: `npm run build` (hasil di `admin-web/dist`, dapat di-hosting statis di Netlify/Vercel/Cloudflare Pages/Nginx; arahkan semua path ke `index.html`).
+Build produksi: `npm run build` (hasil di `admin-web/dist`, dapat di-hosting statis di Netlify/Vercel/Cloudflare Pages/Nginx; arahkan semua path ke `index.html`). Untuk Vercel, sudah disediakan `admin-web/vercel.json` yang mengatur ini otomatis — tanpanya, me-refresh halaman selain `/` (mis. `/profil`, `/pengguna`) akan menampilkan 404 karena path tersebut tidak benar-benar ada sebagai file, hanya dikenali oleh React Router di sisi klien.
 
 Tampilan & kenyamanan: halaman login layar-terbagi (tampil/sembunyi password, peringatan Caps Lock, ingat email, **lupa password** lewat email, **animasi selamat datang saat login berhasil** dan animasi goyang saat gagal) · **halaman Profil Saya** (ganti foto profil, ganti nama, ganti password, ganti email, ringkasan cabang & hak akses milik sendiri) · **tema terang/gelap** dengan palet merah-oranye bernama **Jebewsizou** (mengikuti sistem, dapat diganti) · sidebar berikon yang bisa diciutkan · **pencarian cepat `Ctrl + K`** (pindah halaman, cari produk, cari nomor transaksi) · lonceng peringatan stok menipis · tampilan produk daftar/kartu · animasi halus dan kerangka pemuatan (skeleton).
 
