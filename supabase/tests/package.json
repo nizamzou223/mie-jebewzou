@@ -1,0 +1,12 @@
+{
+  "name": "mie-jebew-db-tests",
+  "private": true,
+  "type": "module",
+  "description": "Uji skema, RLS, dan RPC Supabase memakai Postgres in-memory (PGlite).",
+  "scripts": {
+    "test": "node db.test.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.3.0"
+  }
+}
