@@ -490,6 +490,7 @@ input[type='checkbox'] {
 /* ---------- Segmented control ---------- */
 .seg {
   display: inline-flex;
+  flex-wrap: wrap;
   background: var(--surface-3);
   padding: 4px;
   border-radius: 13px;
@@ -793,6 +794,10 @@ input[type='checkbox'] {
   font-size: 1.02rem;
   letter-spacing: -0.01em;
   margin-right: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .topbar select {
   width: auto;
@@ -806,6 +811,7 @@ input[type='checkbox'] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
@@ -814,7 +820,13 @@ input[type='checkbox'] {
   box-shadow: var(--shadow-xs);
 }
 .outlet-pill .icon {
+  flex: none;
   color: var(--brand);
+}
+.outlet-pill strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .searchbtn {
   display: inline-flex;
@@ -2247,6 +2259,10 @@ input[type='checkbox'] {
   .grid-eq {
     grid-template-columns: 1fr;
   }
+  .outlet-pill,
+  .topbar select {
+    max-width: 42vw;
+  }
   .searchbtn {
     min-width: 0;
   }
@@ -2320,5 +2336,32 @@ input[type='checkbox'] {
   }
   .hero {
     padding: 22px 20px;
+  }
+  .card-head {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 14px 16px;
+  }
+  .card-head .tabs {
+    margin: 0;
+  }
+  .tab {
+    padding: 8px 10px;
+    font-size: 0.83rem;
+  }
+  .seg button {
+    padding: 6px 10px;
+    font-size: 0.83rem;
+  }
+}
+@media (max-width: 480px) {
+  /* Di layar HP sempit, judul halaman sudah terlihat di dalam konten (PageHeader/hero) —
+     sembunyikan agar cabang, pencarian, dan menu akun di topbar tidak berdesakan/terpotong. */
+  .topbar .crumb {
+    display: none;
+  }
+  .outlet-pill,
+  .topbar select {
+    max-width: 56vw;
   }
 }

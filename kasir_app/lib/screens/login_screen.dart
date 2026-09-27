@@ -6,6 +6,7 @@ import '../theme.dart';
 import '../utils/format.dart';
 import '../widgets/animated_background.dart';
 import '../widgets/common.dart';
+import '../widgets/login_hero_bowl.dart';
 import '../widgets/login_success_overlay.dart';
 
 enum _ButtonState { idle, loading }
@@ -89,49 +90,67 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Hero gradasi — padanan panel kiri pada halaman login website admin.
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(28, 40, 28, 52),
+                    clipBehavior: Clip.antiAlias,
                     decoration: const BoxDecoration(
-                      gradient: Brand.gradient,
+                      gradient: RadialGradient(
+                        center: Alignment(0.9, -1),
+                        radius: 1.4,
+                        colors: [Color(0x3DFFCD96), Colors.transparent],
+                        stops: [0, 0.6],
+                      ),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.circular(32),
                       ),
                     ),
-                    child: Column(
+                    child: Stack(
                       children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'JZ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                        // Latar gradien merek — padanan panel hero pada halaman login website admin.
+                        const Positioned.fill(
+                          child: DecoratedBox(decoration: BoxDecoration(gradient: Brand.gradient)),
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Jebewsizou Kasir',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Kelola transaksi cabang Anda',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.88),
-                            fontSize: 14,
+                        const Positioned.fill(child: DottedTexture()),
+                        Positioned(bottom: -8, right: -14, child: NoodleBowl(width: 150)),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(28, 40, 28, 130),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.18),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'JZ',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Jebewsizou Kasir',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Kelola transaksi cabang Anda',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.88),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
