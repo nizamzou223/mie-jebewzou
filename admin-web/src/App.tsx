@@ -9,6 +9,7 @@ import { Button, EmptyState, Notice, Spinner } from './components/ui';
 import Icon, { type IconName } from './components/Icon';
 import CommandPalette from './components/CommandPalette';
 import ChangePasswordDialog from './components/ChangePasswordDialog';
+import LoginSuccessOverlay from './components/LoginSuccessOverlay';
 import { number, roleLabel } from './lib/format';
 
 const LoginPage = lazy(() => import('./pages/Login'));
@@ -24,6 +25,7 @@ const TransactionsPage = lazy(() => import('./pages/Transactions'));
 const ReportsPage = lazy(() => import('./pages/Reports'));
 const ActivityPage = lazy(() => import('./pages/Activity'));
 const SettingsPage = lazy(() => import('./pages/Settings'));
+const ProfilePage = lazy(() => import('./pages/Profile'));
 
 interface NavItem {
   to: string;
@@ -141,8 +143,8 @@ function UserMenu({ onChangePassword }: { onChangePassword: () => void }) {
   if (!profile) return null;
   return (
     <div className="pop-wrap" ref={ref}>
-      <button className="avatar avatar-sm" style={{ border: 0, cursor: 'pointer' }} onClick={() => setOpen((v) => !v)} aria-label="Menu akun" aria-expanded={open}>
-        {initials(profile.full_name)}
+      <button className="avatar avatar-sm" style={{ border: 0, cursor: 'pointer', overflow: 'hidden' }} onClick={() => setOpen((v) => !v)} aria-label="Menu akun" aria-expanded={open}>
+        {profile.avatar_url ? <img className="avatar-img" src={profile.avatar_url} alt="" /> : initials(profile.full_name)}
       </button>
       {open && (
         <div className="pop" style={{ minWidth: 270 }} role="menu">
@@ -151,6 +153,9 @@ function UserMenu({ onChangePassword }: { onChangePassword: () => void }) {
             <div className="muted small">{profile.email}</div>
             <div className="small" style={{ marginTop: 4, color: 'var(--brand-ink)', fontWeight: 700 }}>{roleLabel[profile.role]}</div>
           </div>
+          <Link to="/profil" className="pop-item" role="menuitem" onClick={close}>
+            <Icon name="user" /> Profil saya
+          </Link>
           <button className="pop-item" role="menuitem" onClick={() => { close(); onChangePassword(); }}>
             <Icon name="key" /> Ganti password
           </button>
@@ -260,11 +265,13 @@ function Shell() {
         </nav>
         <div className="sidebar-foot">
           <div className="usercard">
-            <span className="avatar">{initials(profile?.full_name ?? '')}</span>
-            <div className="who">
+            <span className="avatar" style={{ overflow: 'hidden' }}>
+              {profile?.avatar_url ? <img className="avatar-img" src={profile.avatar_url} alt="" /> : initials(profile?.full_name ?? '')}
+            </span>
+            <Link to="/profil" className="who" style={{ textDecoration: 'none', color: 'inherit' }} onClick={(e) => e.stopPropagation()}>
               <strong>{profile?.full_name}</strong>
               <span>{profile ? roleLabel[profile.role] : ''}</span>
-            </div>
+            </Link>
             <button
               className="icon-btn"
               aria-label="Keluar"
@@ -336,6 +343,7 @@ function Shell() {
               <Route path="/pengguna" element={<Guard allow={can('user.manage')}><UsersPage /></Guard>} />
               <Route path="/aktivitas" element={<Guard allow={can('audit.view')}><ActivityPage /></Guard>} />
               <Route path="/pengaturan" element={<Guard allow={isOwner || can('discount.manage')}><SettingsPage /></Guard>} />
+              <Route path="/profil" element={<ProfilePage />} />
               <Route path="*" element={<Navigate to={home} replace />} />
             </Routes>
           </Suspense>
@@ -357,8 +365,9 @@ function Shell() {
 export default function App() {
   const { status, blockReason, signOut, recovery } = useAuth();
 
+  let content: ReactNode;
   if (!isConfigured) {
-    return (
+    content = (
       <div className="auth-panel" style={{ minHeight: '100%' }}>
         <div className="auth-card stack">
           <h2>Konfigurasi belum lengkap</h2>
@@ -369,24 +378,22 @@ export default function App() {
         </div>
       </div>
     );
-  }
-  if (recovery) {
-    return (
+  } else if (recovery) {
+    content = (
       <Suspense fallback={<Spinner />}>
         <ResetPasswordPage />
       </Suspense>
     );
-  }
-  if (status === 'loading') return <Spinner label="Menyiapkan…" />;
-  if (status === 'signed_out') {
-    return (
+  } else if (status === 'loading') {
+    content = <Spinner label="Menyiapkan…" />;
+  } else if (status === 'signed_out') {
+    content = (
       <Suspense fallback={<Spinner />}>
         <LoginPage />
       </Suspense>
     );
-  }
-  if (status === 'blocked') {
-    return (
+  } else if (status === 'blocked') {
+    content = (
       <div className="auth-panel" style={{ minHeight: '100%' }}>
         <div className="auth-card stack">
           <h2>Tidak dapat masuk</h2>
@@ -395,6 +402,16 @@ export default function App() {
         </div>
       </div>
     );
+  } else {
+    content = <Shell />;
   }
-  return <Shell />;
+
+  // Dirender sebagai saudara (bukan di dalam salah satu cabang di atas) agar animasi berhasil
+  // login tetap tuntas diputar walau `content` sudah berganti dari LoginPage ke Shell.
+  return (
+    <>
+      {content}
+      {isConfigured && <LoginSuccessOverlay />}
+    </>
+  );
 }

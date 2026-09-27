@@ -91,7 +91,9 @@ export default function UsersPage() {
                 header: 'Nama',
                 cell: (u) => (
                   <div className="row gap-sm">
-                    <span className={'avatar avatar-sm tone-' + ((u.full_name.length % 4) + 1)}>{(u.full_name.trim()[0] ?? '?').toUpperCase()}</span>
+                    <span className={'avatar avatar-sm tone-' + ((u.full_name.length % 4) + 1)} style={{ overflow: 'hidden' }}>
+                      {u.avatar_url ? <img className="avatar-img" src={u.avatar_url} alt="" /> : (u.full_name.trim()[0] ?? '?').toUpperCase()}
+                    </span>
                     <div>
                       <strong>{u.full_name}</strong>
                       {u.id === profile?.id && <span className="muted small"> (Anda)</span>}

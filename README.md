@@ -37,10 +37,10 @@ Izin per peran dapat diubah owner di **Pengaturan → Hak akses role**. Owner-on
 2. **Matikan pendaftaran mandiri:** *Authentication → Sign In / Providers → Email* → nonaktifkan **Allow new users to sign up**. (Akun hanya dibuat oleh owner/admin lewat aplikasi.)
 3. Jalankan skema. Pilih salah satu:
    * **SQL Editor:** buka dan jalankan berurutan isi file
-     `supabase/migrations/0001_schema.sql` → `0002_security.sql` → `0003_rpc.sql` → `0004_reports.sql`, lalu `supabase/seed.sql` (kategori, variasi, menu contoh, bahan & resep contoh).
+     `supabase/migrations/0001_schema.sql` → `0002_security.sql` → `0003_rpc.sql` → `0004_reports.sql` → `0005_profile.sql`, lalu `supabase/seed.sql` (kategori, variasi, menu contoh, bahan & resep contoh).
    * **Supabase CLI:** `supabase link --project-ref <ref>` lalu `supabase db push` dan jalankan `seed.sql` di SQL Editor.
 
-   Semua file aman dijalankan ulang (idempotent). Bila Anda sudah pernah menjalankan `0004_reports.sql`, jalankan ulang file itu agar laporan **per jam** (dipakai kartu "Jam ramai") tersedia.
+   Semua file aman dijalankan ulang (idempotent). Bila Anda sudah pernah menjalankan `0004_reports.sql`, jalankan ulang file itu agar laporan **per jam** (dipakai kartu "Jam ramai") tersedia. Bila Anda sudah pernah menjalankan migrasi sebelum `0005_profile.sql`, jalankan file itu agar kolom **foto profil** dan halaman **Profil Saya** (ganti nama/foto sendiri) berfungsi.
 4. Deploy Edge Function untuk pembuatan akun (memakai service-role key **di sisi server saja**):
    ```bash
    supabase functions deploy admin-users
@@ -67,7 +67,7 @@ npm run dev                 # http://localhost:5173
 
 Build produksi: `npm run build` (hasil di `admin-web/dist`, dapat di-hosting statis di Netlify/Vercel/Cloudflare Pages/Nginx; arahkan semua path ke `index.html`).
 
-Tampilan & kenyamanan: halaman login layar-terbagi (tampil/sembunyi password, peringatan Caps Lock, ingat email, **lupa password** lewat email, ganti password dari menu akun) · **tema terang/gelap** dengan palet hijau daun + krem bernama **Jebewsizou** (mengikuti sistem, dapat diganti) · sidebar berikon yang bisa diciutkan · **pencarian cepat `Ctrl + K`** (pindah halaman, cari produk, cari nomor transaksi) · lonceng peringatan stok menipis · tampilan produk daftar/kartu · animasi halus dan kerangka pemuatan (skeleton).
+Tampilan & kenyamanan: halaman login layar-terbagi (tampil/sembunyi password, peringatan Caps Lock, ingat email, **lupa password** lewat email, **animasi selamat datang saat login berhasil** dan animasi goyang saat gagal) · **halaman Profil Saya** (ganti foto profil, ganti nama, ganti password, ganti email, ringkasan cabang & hak akses milik sendiri) · **tema terang/gelap** dengan palet merah-oranye bernama **Jebewsizou** (mengikuti sistem, dapat diganti) · sidebar berikon yang bisa diciutkan · **pencarian cepat `Ctrl + K`** (pindah halaman, cari produk, cari nomor transaksi) · lonceng peringatan stok menipis · tampilan produk daftar/kartu · animasi halus dan kerangka pemuatan (skeleton).
 
 > Alur "lupa password" memakai email pemulihan bawaan Supabase: tambahkan alamat website Anda (mis. `http://localhost:5173` dan domain produksi) di *Authentication → URL Configuration → Redirect URLs*, dan atur pengirim email (SMTP) bila memakai banyak pengguna.
 
@@ -117,13 +117,15 @@ Menjalankan seluruh migration (dua kali) di Postgres in-memory (PGlite) lalu men
 
 | Bagian | Cara uji | Hasil |
 |---|---|---|
-| Skema, RLS, RPC transaksi/shift/stok/void/laporan | 56 tes di PGlite (`supabase/tests`), termasuk migration ganda dan pembatasan antar cabang | lulus |
+| Skema, RLS, RPC transaksi/shift/stok/void/laporan | 59 tes di PGlite (`supabase/tests`), termasuk migration ganda, pembatasan antar cabang, dan penjagaan agar pengguna tidak dapat menonaktifkan akunnya sendiri | lulus |
 | Website admin | `tsc` (strict) + build produksi; lalu dijalankan di Chromium (Playwright) terhadap **PostgREST asli** di atas database uji berisi data contoh: 33 skenario (owner: kategori, variasi, produk lengkap, harga per cabang, stok, void transaksi, laporan → transaksi sumber, CSV, pajak, diskon, hak akses, cabang, pengguna, audit; admin cabang: menu terbatas, data cabang lain tidak terlihat, produk global read-only) | 33/33 lulus |
 | Aplikasi Flutter | `flutter analyze` (0 isu) + 16 unit/widget test (hitungan harga/diskon/pajak sama dengan server, katalog per cabang, opsi wajib, antrean offline, klasifikasi error). Sekali juga dijalankan manual: query katalog/riwayat/shift dan `create_order` milik aplikasi ke PostgREST uji (total server = total aplikasi, kirim ulang tidak menggandakan) | lulus |
 
 **Belum / tidak dapat diuji di lingkungan pengembangan ini**
 
 * **Supabase yang sebenarnya** (Auth/GoTrue, Storage, Edge Function, Realtime): tidak tersedia. Edge Function `admin-users` dan unggah gambar **belum dijalankan**; ditulis mengikuti API resmi dan perlu Anda uji setelah deploy (buat akun dari menu Pengguna, unggah gambar produk).
+* **Ganti email dari halaman Profil Saya** (`supabase.auth.updateUser({ email })`) ditulis mengikuti API resmi tetapi **belum diuji** terhadap alur konfirmasi email Supabase yang sesungguhnya — coba dulu dengan akun Anda sendiri setelah deploy, dan pastikan SMTP/redirect URL sudah diatur (lihat catatan "lupa password" di atas) agar email konfirmasi terkirim.
+* **Animasi selamat datang saat login** dan **halaman Profil Saya** (unggah foto, ubah nama) sudah diperiksa secara visual (Chromium/Playwright) dengan REST API tiruan, tampilannya sesuai dan tanpa galat JavaScript — tetapi belum dicoba terhadap Supabase Storage yang sesungguhnya untuk unggah foto.
 * **Aplikasi Flutter belum dijalankan di perangkat/emulator** dan belum di-build APK/IPA (tidak ada Android SDK/Xcode). Logika sudah diuji, tetapi tampilan dan alur di layar nyata perlu dicoba langsung. Sinkronisasi offline ke server asli juga belum diuji end-to-end.
 * **Cetak ke printer thermal** belum ada. Struk dibagikan sebagai teks (`share_plus`) dan halaman web mendukung cetak lewat dialog browser. Integrasi printer Bluetooth/ESC-POS memerlukan paket & perangkat tambahan.
 * **QRIS/debit/transfer** hanya dicatat sebagai metode pembayaran; tidak ada integrasi payment gateway.

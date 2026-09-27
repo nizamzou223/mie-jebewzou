@@ -230,6 +230,30 @@ const PATHS: Record<string, ReactNode> = {
   zap: <path d="M13 2 3 14h9l-1 8 10-12h-9z" />,
   command: <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />,
   arrowRight: <path d="M5 12h14M12 5l7 7-7 7" />,
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8a2 2 0 0 1 2-2h1.2a2 2 0 0 0 1.66-.9l.68-1.02A2 2 0 0 1 11.2 3h1.6a2 2 0 0 1 1.66.88l.68 1.02a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </>
+  ),
+  building: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="1.5" />
+      <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1" />
+    </>
+  ),
+  badge: (
+    <>
+      <circle cx="12" cy="8" r="5" />
+      <path d="m8.5 12.5-2 9 5.5-3 5.5 3-2-9" />
+    </>
+  ),
 };
 
 export type IconName = keyof typeof PATHS;

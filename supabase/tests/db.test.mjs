@@ -201,8 +201,23 @@ await t('fungsi internal tidak dapat dipanggil klien', async () => {
 
 await t('admin tidak dapat menaikkan role (trigger guard)', async () => {
   await rejects(asUser(adminA, () => q(`update profiles set role = 'owner' where id = '${cashA}'`)), /owner yang dapat mengubah role/i);
-  const own = await asUser(adminA, () => q(`update profiles set is_active = false where id = '${adminA}' returning id`));
-  assert.equal(own.length, 0);
+});
+
+await t('non-owner tidak dapat menonaktifkan akunnya sendiri lewat tabel langsung', async () => {
+  await rejects(asUser(adminA, () => q(`update profiles set is_active = false where id = '${adminA}'`)), /status aktif akun sendiri/i);
+  await rejects(asUser(cashA, () => q(`update profiles set is_active = false where id = '${cashA}'`)), /status aktif akun sendiri/i);
+});
+
+await t('setiap pengguna dapat mengubah nama & foto profilnya sendiri (bukan hanya owner)', async () => {
+  await asUser(adminA, () => q(`update profiles set full_name = 'Admin A Baru', avatar_url = 'https://x.test/a.png' where id = '${adminA}'`));
+  const p = (await q('select full_name, avatar_url from profiles where id = $1', [adminA]))[0];
+  assert.equal(p.full_name, 'Admin A Baru');
+  assert.equal(p.avatar_url, 'https://x.test/a.png');
+});
+
+await t('pengguna tidak dapat mengubah profil orang lain yang bukan tanggung jawabnya', async () => {
+  const rows = await asUser(cashA, () => q(`update profiles set full_name = 'Rebutan' where id = '${adminA}' returning id`));
+  assert.equal(rows.length, 0);
 });
 
 await t('admin A tidak dapat menugaskan kasir ke cabang B (bukan cabangnya)', async () => {
