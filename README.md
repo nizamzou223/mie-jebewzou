@@ -37,10 +37,10 @@ Izin per peran dapat diubah owner di **Pengaturan → Hak akses role**. Owner-on
 2. **Matikan pendaftaran mandiri:** *Authentication → Sign In / Providers → Email* → nonaktifkan **Allow new users to sign up**. (Akun hanya dibuat oleh owner/admin lewat aplikasi.)
 3. Jalankan skema. Pilih salah satu:
    * **SQL Editor:** buka dan jalankan berurutan isi file
-     `supabase/migrations/0001_schema.sql` → `0002_security.sql` → `0003_rpc.sql` → `0004_reports.sql` → `0005_profile.sql`, lalu `supabase/seed.sql` (kategori, variasi, menu contoh, bahan & resep contoh).
+     `supabase/migrations/0001_schema.sql` → `0002_security.sql` → `0003_rpc.sql` → `0004_reports.sql` → `0005_profile.sql` → `0006_service_role_grants.sql`, lalu `supabase/seed.sql` (kategori, variasi, menu contoh, bahan & resep contoh).
    * **Supabase CLI:** `supabase link --project-ref <ref>` lalu `supabase db push` dan jalankan `seed.sql` di SQL Editor.
 
-   Semua file aman dijalankan ulang (idempotent). Bila Anda sudah pernah menjalankan `0004_reports.sql`, jalankan ulang file itu agar laporan **per jam** (dipakai kartu "Jam ramai") tersedia. Bila Anda sudah pernah menjalankan migrasi sebelum `0005_profile.sql`, jalankan file itu agar kolom **foto profil** dan halaman **Profil Saya** (ganti nama/foto sendiri) berfungsi.
+   Semua file aman dijalankan ulang (idempotent). Bila Anda sudah pernah menjalankan `0004_reports.sql`, jalankan ulang file itu agar laporan **per jam** (dipakai kartu "Jam ramai") tersedia. Bila Anda sudah pernah menjalankan migrasi sebelum `0005_profile.sql`, jalankan file itu agar kolom **foto profil** dan halaman **Profil Saya** (ganti nama/foto sendiri) berfungsi. **`0006_service_role_grants.sql` penting untuk semua project** — tanpanya, Edge Function `admin-users` (membuat akun, reset password, nonaktifkan akun) gagal dengan "permission denied" karena project Supabase baru tidak selalu otomatis memberi `service_role` hak akses ke tabel.
 4. Deploy Edge Function untuk pembuatan akun (memakai service-role key **di sisi server saja**):
    ```bash
    supabase functions deploy admin-users
