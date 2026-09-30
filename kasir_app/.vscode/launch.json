@@ -1,0 +1,31 @@
+{
+  // Supaya tombol Run/Debug di VS Code (F5) otomatis menyertakan SUPABASE_URL & SUPABASE_ANON_KEY
+  // dari dart_defines.json — tanpa ini, aplikasi selalu menampilkan "Konfigurasi belum lengkap"
+  // karena nilai itu memang wajib disuntik saat build, tidak ada di kode.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "kasir_app (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    },
+    {
+      "name": "kasir_app (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    },
+    {
+      "name": "kasir_app (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    }
+  ]
+}

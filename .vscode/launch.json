@@ -1,0 +1,35 @@
+{
+  // Workspace yang terbuka di VS Code adalah folder ini (mie_jebew), bukan kasir_app langsung —
+  // supaya tombol Run/Debug (F5) di VS Code ikut menyertakan SUPABASE_URL & SUPABASE_ANON_KEY dari
+  // kasir_app/dart_defines.json. Tanpa ini, aplikasi selalu menampilkan "Konfigurasi belum lengkap"
+  // karena nilai itu wajib disuntik saat build lewat --dart-define, bukan ada di dalam kode.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "kasir_app (debug)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "kasir_app",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    },
+    {
+      "name": "kasir_app (profile)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "kasir_app",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    },
+    {
+      "name": "kasir_app (release)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "kasir_app",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "toolArgs": ["--dart-define-from-file=dart_defines.json"]
+    }
+  ]
+}
