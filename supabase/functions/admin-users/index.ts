@@ -109,7 +109,8 @@ Deno.serve(async (req) => {
       }
 
       if (outletIds.length) {
-        const { data: found } = await admin.from('outlets').select('id').in('id', outletIds);
+        const { data: found, error: foundErr } = await admin.from('outlets').select('id').in('id', outletIds);
+        if (foundErr) throw new HttpError(400, `Gagal memeriksa cabang: ${foundErr.message}`);
         if ((found ?? []).length !== outletIds.length) throw new HttpError(400, 'Ada cabang yang tidak ditemukan');
       }
 

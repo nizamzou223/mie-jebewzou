@@ -5,3 +5,8 @@ dist/
 dart_defines.json
 *.log
 .DS_Store
+supabase/.temp/
+# CLI Supabase kadang membuat package.json di root saat dijalankan tanpa itu; project ini
+# tidak memakai npm di root (lihat admin-web/ dan kasir_app/ masing-masing).
+/package.json
+/package-lock.json
