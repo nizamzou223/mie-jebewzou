@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
 
 import 'screens/blocked_screen.dart';
@@ -18,6 +19,12 @@ class KasirApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
       home: const RootGate(),
+      // Default global: ikon status bar gelap (aplikasi ini selalu bertema terang). Layar login
+      // (tanpa AppBar, latar gradien merah-oranye) mengganti ini sendiri jadi ikon putih.
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: child!,
+      ),
     );
   }
 }
@@ -36,7 +43,9 @@ class RootGate extends StatelessWidget {
     switch (session.status) {
       case SessionStatus.booting:
       case SessionStatus.loading:
-        child = const Scaffold(body: Center(child: CircularProgressIndicator()));
+        child = const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
         screenKey = 'loading';
       case SessionStatus.signedOut:
         child = const LoginScreen();
@@ -61,7 +70,10 @@ class RootGate extends StatelessWidget {
       switchOutCurve: Curves.easeInCubic,
       transitionBuilder: (widget, animation) => FadeTransition(
         opacity: animation,
-        child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(animation), child: widget),
+        child: ScaleTransition(
+          scale: Tween(begin: 0.98, end: 1.0).animate(animation),
+          child: widget,
+        ),
       ),
       child: KeyedSubtree(key: ValueKey(screenKey), child: child),
     );

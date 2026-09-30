@@ -80,6 +80,9 @@ class SessionController extends ChangeNotifier {
 
   Future<void> reload() => _load();
 
+  /// Ganti password akun sendiri — perlu sesi yang masih aktif (butuh koneksi internet).
+  Future<void> changePassword(String newPassword) => _db.auth.updateUser(UserAttributes(password: newPassword));
+
   void _reset() {
     profile = null;
     outlets = [];

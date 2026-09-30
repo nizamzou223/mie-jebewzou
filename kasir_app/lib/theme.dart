@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
 /// Warna identik dengan website admin: merah-oranye sebagai aksen, abu netral bersih.
 class Brand {
@@ -18,7 +19,11 @@ class Brand {
   static const dangerSoft = Color(0xFFFDECE7);
 
   /// Gradasi merah-oranye — identik dengan --brand-grad di website admin.
-  static const gradient = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [accent, primary]);
+  static const gradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [accent, primary],
+  );
 }
 
 ThemeData buildTheme() {
@@ -42,14 +47,23 @@ ThemeData buildTheme() {
       elevation: 0,
       scrolledUnderElevation: 1,
       centerTitle: false,
+      // Eksplisit (bukan mengandalkan deteksi otomatis): ikon status bar gelap di atas
+      // app bar putih, supaya jam/baterai tidak "menghilang" (putih di atas putih) di sebagian
+      // perangkat Android saat mode gelap sistem aktif.
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
     cardTheme: const CardThemeData(
       color: Colors.white,
       elevation: 1,
-      shadowColor: Color(0x14000000), // bayangan lembut, senada dengan --shadow di website admin
+      shadowColor: Color(
+        0x14000000,
+      ), // bayangan lembut, senada dengan --shadow di website admin
       surfaceTintColor: Colors.transparent,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: radius, side: BorderSide(color: Brand.line)),
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
+        side: BorderSide(color: Brand.line),
+      ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
@@ -71,9 +85,18 @@ ThemeData buildTheme() {
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      border: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Color(0xFFD7D9DF))),
-      enabledBorder: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Color(0xFFD7D9DF))),
-      focusedBorder: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Brand.primary, width: 2)),
+      border: const OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: Color(0xFFD7D9DF)),
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: Color(0xFFD7D9DF)),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: Brand.primary, width: 2),
+      ),
     ),
     chipTheme: ChipThemeData(
       backgroundColor: Colors.white,
@@ -87,7 +110,9 @@ ThemeData buildTheme() {
       backgroundColor: Colors.white,
       indicatorColor: Brand.primarySoft,
       height: 68,
-      labelTextStyle: WidgetStateProperty.all(const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+      ),
     ),
   );
 }

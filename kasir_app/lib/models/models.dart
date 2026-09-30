@@ -21,21 +21,32 @@ class Outlet {
 }
 
 class AppProfile {
-  AppProfile({required this.id, required this.fullName, required this.email, required this.role});
+  AppProfile({required this.id, required this.fullName, required this.email, required this.role, this.avatarUrl, this.createdAt});
 
   final String id;
   final String fullName;
   final String? email;
   final String role; // owner | admin | cashier
+  final String? avatarUrl;
+  final DateTime? createdAt;
 
   factory AppProfile.fromJson(Map<String, dynamic> j) => AppProfile(
         id: j['id'] as String,
         fullName: (j['full_name'] as String?) ?? '',
         email: j['email'] as String?,
         role: (j['role'] as String?) ?? 'cashier',
+        avatarUrl: j['avatar_url'] as String?,
+        createdAt: j['created_at'] == null ? null : DateTime.tryParse(j['created_at'] as String),
       );
 
-  Map<String, dynamic> toJson() => {'id': id, 'full_name': fullName, 'email': email, 'role': role};
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'full_name': fullName,
+        'email': email,
+        'role': role,
+        'avatar_url': avatarUrl,
+        'created_at': createdAt?.toIso8601String(),
+      };
 
   String get roleLabel => switch (role) { 'owner' => 'Owner', 'admin' => 'Admin Cabang', _ => 'Kasir' };
 }

@@ -12,6 +12,8 @@ String dateTimeId(DateTime d) => DateFormat('d MMM y, HH:mm', 'id_ID').format(d.
 
 String timeId(DateTime d) => DateFormat('HH:mm', 'id_ID').format(d.toLocal());
 
+String dateId(DateTime d) => DateFormat('d MMM y', 'id_ID').format(d.toLocal());
+
 const paymentLabels = {
   'cash': 'Tunai',
   'qris': 'QRIS',
